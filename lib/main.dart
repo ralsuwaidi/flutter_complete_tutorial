@@ -1,6 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 import './question.dart';
+import './answer.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,7 +17,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State {
   var _questionIndex = 0;
 
-  void answerQuestion() {
+  void _answerQuestion() {
     setState(() {
       _questionIndex++;
     });
@@ -23,8 +26,22 @@ class _MyAppState extends State {
 
   Widget build(BuildContext context) {
     var _questions = [
-      'What\'s your favourite color?',
-      'What\'s your favourite animal?'
+      {
+        'questionText': 'What\'s your favourite color?',
+        'answers': [
+          'red',
+          'green',
+          'blue',
+        ]
+      },
+      {
+        'questionText': 'What\'s your favourite animal?',
+        'answers': [
+          'dog',
+          'sheep',
+          'cat',
+        ]
+      }
     ];
 
     return MaterialApp(
@@ -34,10 +51,11 @@ class _MyAppState extends State {
         ),
         body: Column(
           children: [
-            Question(_questions[_questionIndex]),
-            RaisedButton(child: Text('Answer 1'), onPressed: answerQuestion),
-            RaisedButton(child: Text('Answer 2'), onPressed: answerQuestion),
-            RaisedButton(child: Text('Answer 3'), onPressed: answerQuestion),
+            Question(_questions[_questionIndex]['questionText']),
+            ...(_questions[_questionIndex]['answers'] as List<String>)
+                .map((answer) {
+              return Answer(answer, _answerQuestion);
+            }).toList()
           ],
         ),
       ),
